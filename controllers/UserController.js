@@ -26,6 +26,22 @@ router.post("/login", async (req, res) => {
     return res.send(ret(200, user));
 });
 
+router.post("/getUser", async (req, res) => {
+    let params = req.body;
+
+    if (!params.username) {
+        return res.send(ret(400, 'Faltan datos'));
+    }
+
+    let user = await BBDD.findUser(params.username)
+
+    if (!user) {
+        return res.send(ret(403, 'El usuario no existe'));
+    }
+
+    return res.send(ret(200, user));
+});
+
 //Registro de usuarios
 router.post("/register", (req, res) => {
 
