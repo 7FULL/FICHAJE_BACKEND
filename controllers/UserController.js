@@ -10,17 +10,17 @@ router.post("/login", async (req, res) => {
     let params = req.body;
 
     if (!params.username || !params.password) {
-        return res.send(ret(400, 'Faltan datos'));
+        return res.send(ret(400, new User()));
     }
 
     let user = await BBDD.findUser(params.username)
 
     if (!user) {
-        return res.send(ret(403, 'El usuario no existe'));
+        return res.send(ret(403, new User()));
     }
 
     if (!comparePasswords(params.password, user.password)) {
-        return res.send(ret(403, 'Contraseña incorrecta'));
+        return res.send(ret(403, new User()));
     }
 
     return res.send(ret(200, user));
