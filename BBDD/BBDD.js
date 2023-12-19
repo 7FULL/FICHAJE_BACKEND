@@ -36,7 +36,22 @@ async function insertUser(user) {
     return true
 }
 
+//Actualizar un usuario
+async function updateUser(user) {
+    console.log(user)
+
+    //Le quitamos el _id para que no de error al actualizar
+    delete user._id
+
+    await users.updateOne({ email: user.email }, { $set: user }).catch(err => {
+        console.log("Error al actualizar el usuario: "+ err)
+        return false
+    })
+    return true
+}
+
 module.exports = {
     findUser,
-    insertUser
+    insertUser,
+    updateUser
 }

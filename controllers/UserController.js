@@ -47,14 +47,42 @@ router.post("/register", (req, res) => {
 
 });
 
+//Fichar
+router.post("/fichar", async (req, res) => {
+    let params = req.body;
+
+    if (!params.username || !params.fichaje) {
+        return res.send(ret(400, 'Faltan datos'));
+    }
+
+    let user = await BBDD.findUser(params.username)
+
+    if (!user) {
+        return res.send(ret(403, 'El usuario no existe'));
+    }
+
+    //Si el usuario tiene ya ese fichaje lo actualizamos
+    if (user.fichajes != null && user.fichajes.includes(params.fichaje)) {
+        //Actualizamos el fichaje
+        user.fichajes[user.fichajes.indexOf(params.fichaje)] = params.fichaje
+    } else {
+        //Si no lo tiene lo añadimos
+        user.fichajes = [params.fichaje]
+    }
+
+    //Actualizamos el usuario en la BBDD
+    BBDD.updateUser(user).then(r => {
+        return res.send(ret(200, r));
+    })
+});
+
 //Funcion para devolver codigo de peticion y objeto json con mensaje
 function ret(code, message) {
     let json = {
         code: code,
         data: message
     }
-
-    console.log(json);
+    //console.log(json);
 
     return JSON.stringify(json);
 }
